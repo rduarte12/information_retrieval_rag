@@ -76,7 +76,7 @@ Criados durante a implementação: `scripts/`, `config/config.yaml`, `artifacts/
 
 | Componente | Módulo | Status |
 |---|---|---|
-| C-0 Carregador NFCorpus | `src/data_loader.py` | A fazer (S1) |
+| C-0 Carregador NFCorpus | `src/data_loader.py` | **Feito**: 10 testes em `tests/test_data_loader.py` (6 unitários + 4 `@pytest.mark.data`) |
 | C-1 Pré-processamento | `src/preprocessing.py` | A fazer (S2) |
 | C-2 Índice invertido | `src/inverted_index.py` | **Feito**: 28 testes em `tests/test_bm25.py` |
 | C-3 BM25 | `src/bm25.py` | **Feito**; geração das runs a fazer (S2) |
