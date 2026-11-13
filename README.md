@@ -77,9 +77,9 @@ Criados durante a implementação: `scripts/`, `config/config.yaml`, `artifacts/
 | Componente | Módulo | Status |
 |---|---|---|
 | C-0 Carregador NFCorpus | `src/data_loader.py` | **Feito**: 10 testes em `tests/test_data_loader.py` (6 unitários + 4 `@pytest.mark.data`) |
-| C-1 Pré-processamento | `src/preprocessing.py` | A fazer (S2) |
+| C-1 Pré-processamento | `src/preprocessing.py` | **Feito**: 6 testes em `tests/test_preprocessing.py`; melhor config no `dev` (`stop_snowball`) |
 | C-2 Índice invertido | `src/inverted_index.py` | **Feito**: 28 testes em `tests/test_bm25.py` |
-| C-3 BM25 | `src/bm25.py` | **Feito**; geração das runs a fazer (S2) |
+| C-3 BM25 | `src/bm25.py` | **Feito**: run do `dev` gerada; run única do `test` na S8 |
 | C-4 Correção ortográfica | `src/spell.py` | A fazer (S7) |
 | C-5 Busca semântica | `src/dense.py` | A fazer (S4) |
 | C-6 Avaliação | `src/evaluation.py` | A fazer (S3) |
