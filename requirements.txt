@@ -1,0 +1,11 @@
+# Fixar as versões com == na sprint S0 (pip freeze), conforme docs/t2_tds.md §2.8.
+numpy
+pandas
+nltk
+pyyaml
+pytest
+ir_measures
+torch
+transformers
+sentence-transformers
+google-genai

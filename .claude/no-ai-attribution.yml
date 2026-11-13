@@ -1,0 +1,36 @@
+# Verificação no servidor (D9): falha se algum commit enviado tiver IA como autora ou coautora.
+# Complementa o hook local, que pode ser pulado com --no-verify.
+name: no-ai-attribution
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verificar autoria e mensagens dos commits
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          if [ "$EVENT" = "pull_request" ]; then
+            RANGE="$PR_BASE..$PR_HEAD"
+          elif [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            RANGE="$AFTER"            # branch nova: verifica todo o histórico
+          else
+            RANGE="$BEFORE..$AFTER"
+          fi
+          echo "Verificando $RANGE"
+          bash .githooks/check_ai_attribution.sh --range "$RANGE"

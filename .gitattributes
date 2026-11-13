@@ -1,0 +1,5 @@
+# Scripts e hooks com fim de linha LF (o Git for Windows executa hooks via bash).
+*.sh            text eol=lf
+.githooks/*     text eol=lf
+*.py            text eol=lf
+*.yml           text eol=lf

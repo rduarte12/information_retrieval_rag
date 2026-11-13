@@ -218,3 +218,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# --- Trabalho Prático 2 (projeto) ---
+data/
+artifacts/
+*.npy
+*.parquet
+*.trec
+.claude/settings.local.json
+setup_manual/
