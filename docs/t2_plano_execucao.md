@@ -2,7 +2,7 @@
 
 > Guia de implementação em sprints. Cada sprint implementa um ou mais componentes do `docs/t2_tds.md` e só termina quando os **testes-contrato** dela passam.
 > Responsável pela implementação: Joao Pedro Correa Caetano. Especificação: Rafael Mendonça Duarte.
-> Prazo: **19/11/2026, 23:59**. As datas-alvo abaixo deixam o último dia livre para o relatório e a entrega.
+> Prazo de entrega: **19/11/2026, 23:59**. As sprints não têm data própria: seguem a ordem abaixo, respeitando as dependências.
 
 ## Como usar
 
@@ -42,7 +42,7 @@ Os testes que exigem dados reais rodam com `pytest -m data`, depois de baixar o 
 
 ---
 
-## S0 — Ambiente (13/11)
+## S0 — Ambiente
 
 **Depende de:** nada.
 
@@ -55,7 +55,7 @@ Os testes que exigem dados reais rodam com `pytest -m data`, depois de baixar o 
 
 **Pronto quando:** `pytest` passa num ambiente limpo, e um commit de teste com `Co-Authored-By: Claude` é recusado pelo hook (desfazer depois com `git reset`).
 
-## S1 — Dados (TDS-0) (14/11)
+## S1 — Dados (TDS-0)
 
 **Depende de:** S0. **Arquivos:** `src/data_loader.py`, `tests/test_data_loader.py`.
 
@@ -67,7 +67,7 @@ Os testes que exigem dados reais rodam com `pytest -m data`, depois de baixar o 
 
 **Saídas:** `artifacts/data_stats.json`, `artifacts/rag_queries.json`.
 
-## S2 — Pré-processamento + busca lexical (TDS-1, TDS-2, TDS-3) (14/11)
+## S2 — Pré-processamento + busca lexical (TDS-1, TDS-2, TDS-3)
 
 **Depende de:** S1. **Arquivos:** `src/preprocessing.py`, `tests/test_preprocessing.py`.
 
@@ -83,7 +83,7 @@ Os testes que exigem dados reais rodam com `pytest -m data`, depois de baixar o 
 - [ ] Gerar `lexical_{dev,test}.trec` e `lexical_candidates_{split}.csv`, com aviso no console para consultas com menos de 100 candidatos (D7). **Não completar.**
 - [ ] Gerar `artifacts/index_stats_*.json`, com vocabulário, postings, tempo de construção e tempo médio por consulta (RF-2).
 
-## S3 — Avaliação (TDS-6) (15/11)
+## S3 — Avaliação (TDS-6)
 
 **Depende de:** S1. **Arquivos:** `src/evaluation.py`, `tests/test_evaluation.py`, `tests/test_eval_vs_ir_measures.py`.
 
@@ -93,7 +93,7 @@ Os testes que exigem dados reais rodam com `pytest -m data`, depois de baixar o 
 - [ ] diferença ≤ 1e-9 em relação ao `ir_measures` em todas as consultas, com as ausentes da run contando 0;
 - [ ] R5, P5 e Hit5 calculados à mão.
 
-## S4 — Busca semântica (TDS-5) (15/11; pode correr em paralelo com S2/S3)
+## S4 — Busca semântica (TDS-5) (pode correr em paralelo com S2/S3)
 
 **Depende de:** S1. **Arquivos:** `src/dense.py`, `tests/test_dense.py`.
 
@@ -107,7 +107,7 @@ Os testes que exigem dados reais rodam com `pytest -m data`, depois de baixar o 
 - [ ] Texto cru (sem stopwords nem stemming); `normalize_embeddings=True`; `torch.set_num_threads(4)`.
 - [ ] Runs `semantic_{dev,test}.trec`; NDCG@10 do dev em `validation_dev.csv` **antes** de qualquer execução no test.
 
-## S5 — Orquestrador + RRF (TDS-14, TDS-7) (16/11)
+## S5 — Orquestrador + RRF (TDS-14, TDS-7)
 
 **Depende de:** S2, S3, S4. **Arquivos:** `src/orchestrator.py`, `src/fusion.py`, `tests/test_split_guard.py`, `tests/test_fusion.py`, `config/config.yaml`.
 
@@ -120,7 +120,7 @@ Os testes que exigem dados reais rodam com `pytest -m data`, depois de baixar o 
 - [ ] Grade k ∈ {10, 60, 100} no dev → `rrf_k_dev.csv`; fixar o k no config.
 - [ ] Runs `hybrid_{split}.trec`.
 
-## S6 — Reranking (TDS-8) (16/11)
+## S6 — Reranking (TDS-8)
 
 **Depende de:** S5. **Arquivos:** `src/rerank.py`, `tests/test_rerank.py`.
 
@@ -134,7 +134,7 @@ Os testes que exigem dados reais rodam com `pytest -m data`, depois de baixar o 
 - [ ] Validação no dev (`validation_dev.csv`); tempo médio por etapa registrado.
 - [ ] Ainda **não** congelar o config: o congelamento acontece no fim da S7 (passo 5 da AD §1.2).
 
-## S7 — Correção ortográfica (TDS-4) (17/11)
+## S7 — Correção ortográfica (TDS-4)
 
 **Depende de:** S2, S3 (e S4 para a extensão D6). **Arquivos:** `src/spell.py`, `tests/test_spell.py`.
 
@@ -149,7 +149,7 @@ Os testes que exigem dados reais rodam com `pytest -m data`, depois de baixar o 
 - [ ] Grade no dev → `spell_grid_dev.csv`; fixar os parâmetros; **congelar o config**.
 - [ ] 10 consultas do test × 3 condições, no BM25 e no bi-encoder (D6) → `typo_experiment.csv`, `robustez_lex_sem.csv`.
 
-## S8 — Execução no test + CSVs (TDS-13) (17/11)
+## S8 — Execução no test + CSVs (TDS-13)
 
 **Depende de:** S5–S7 com o config congelado. **Arquivos:** `src/results_writer.py`, `scripts/run_test.py`, `tests/test_results_schema.py`.
 
@@ -163,7 +163,7 @@ Os testes que exigem dados reais rodam com `pytest -m data`, depois de baixar o 
 **Checklist:**
 - [ ] Rodar o test **uma vez** (`test_run.lock`).
 
-## S9 — RAG + avaliação humana (TDS-9, 10, 11) (18/11)
+## S9 — RAG + avaliação humana (TDS-9, 10, 11)
 
 **Depende de:** S8. **Arquivos:** `src/rag_context.py`, `src/llm.py`, `src/human_eval.py`, `tests/test_rag.py`.
 
@@ -178,14 +178,14 @@ Os testes que exigem dados reais rodam com `pytest -m data`, depois de baixar o 
 - [ ] Gerar `responses.jsonl` **uma vez**; registrar o hash.
 - [ ] Avaliação humana às cegas → `scores.csv` → `rag_experiment.csv`.
 
-## S10 — Análises (TDS-12) (18/11)
+## S10 — Análises (TDS-12)
 
 **Depende de:** S8, S9. **Arquivos:** `src/analysis.py`.
 
 - [ ] Gerar `rf7_cases.csv`, `rf7_top5.csv`, `rf10_cases.csv`, `rf10_moves.csv` e `rf14_trace.csv` pelas regras determinísticas.
 - [ ] Toda afirmação numérica do relatório aponta para uma célula desses CSVs.
 
-## S11 — Relatório, revisão e entrega (19/11)
+## S11 — Relatório, revisão e entrega
 
 - [ ] Relatório PDF (≤ 20 páginas sem as referências) com as seções a–g. Transcrever as justificativas de D1–D10 e TDS-DEC-n.
 - [ ] Checklist completo do TDS §3.
