@@ -1,11 +1,11 @@
-# Fixar as versões com == na sprint S0 (pip freeze), conforme docs/t2_tds.md §2.8.
-numpy
-pandas
-nltk
-pyyaml
-pytest
-ir_measures
-torch
-transformers
-sentence-transformers
-google-genai
+# Versões fixadas na sprint S0 (pip freeze), conforme docs/t2_tds.md §2.8.
+numpy==2.5.4
+pandas==3.1.1
+nltk==3.10.4
+PyYAML==6.0.3
+pytest==9.2.0
+ir_measures==0.4.3
+torch==2.15.0
+transformers==5.23.0
+sentence-transformers==6.3.0
+google-genai==3.3.0

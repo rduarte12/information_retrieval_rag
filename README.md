@@ -129,7 +129,7 @@ python scripts/run_typo.py    # experimento de erros ortográficos (RF-4)
 python scripts/run_rag.py     # RAG A/B (RF-11/12); depois a avaliação humana (RF-13)
 ```
 
-Versão do Python e das bibliotecas: `<preencher na S0>`.
+Versão do Python e das bibliotecas: **Python 3.14.10**; versões exatas das bibliotecas fixadas em [`requirements.txt`](requirements.txt).
 
 ## Regras do projeto (resumo)
 
