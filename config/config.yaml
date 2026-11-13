@@ -1,0 +1,38 @@
+data:
+  root: data/nfcorpus
+preprocessing:
+  lowercase: true
+  remove_stopwords: true
+  stemmer: snowball
+bm25:
+  k1: 1.2
+  b: 0.75
+  k: 100
+dense:
+  model_id: sentence-transformers/multi-qa-MiniLM-L6-cos-v1
+  revision: null
+  max_seq_length: 512
+  batch_size: 16
+rrf:
+  k: 60
+  depth: 100
+rerank:
+  model_id: cross-encoder/ms-marco-MiniLM-L2-v2
+  revision: null
+  max_length: 512
+  depth: 50
+spell:
+  k: 2
+  jaccard_min: 0.3
+  max_edit: 2
+  distance: osa
+llm:
+  model_id: gemini-3.1-flash-lite
+  temperature: 0.0
+  seed: 42
+  max_output_tokens: 1024
+  thinking: null
+  language: Portuguese
+runtime:
+  torch_threads: 4
+frozen: false
