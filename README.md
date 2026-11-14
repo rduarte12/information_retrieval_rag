@@ -82,7 +82,7 @@ Criados durante a implementação: `scripts/`, `config/config.yaml`, `artifacts/
 | C-3 BM25 | `src/bm25.py` | **Feito**; geração das runs a fazer (S2) |
 | C-4 Correção ortográfica | `src/spell.py` | A fazer (S7) |
 | C-5 Busca semântica | `src/dense.py` | A fazer (S4) |
-| C-6 Avaliação | `src/evaluation.py` | A fazer (S3) |
+| C-6 Avaliação | `src/evaluation.py` | **Feito**: 8 testes em `tests/test_evaluation.py` e `tests/test_eval_vs_ir_measures.py` (<= 1e-9 vs `ir_measures`) |
 | C-7 RRF | `src/fusion.py` | A fazer (S5) |
 | C-8 Reranking | `src/rerank.py` | A fazer (S6) |
 | C-9/C-10 Contexto + LLM | `src/rag_context.py`, `src/llm.py` | A fazer (S9) |
