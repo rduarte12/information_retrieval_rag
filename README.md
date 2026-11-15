@@ -83,13 +83,13 @@ Criados durante a implementação: `scripts/`, `config/config.yaml`, `artifacts/
 | C-4 Correção ortográfica | `src/spell.py` | A fazer (S7) |
 | C-5 Busca semântica | `src/dense.py` | **Feito**: 7 testes em `tests/test_dense.py` (4 unitários + 3 `@pytest.mark.data`); NDCG@10 dev = 0.2720 |
 | C-6 Avaliação | `src/evaluation.py` | **Feito**: 8 testes em `tests/test_evaluation.py` e `tests/test_eval_vs_ir_measures.py` (<= 1e-9 vs `ir_measures`) |
-| C-7 RRF | `src/fusion.py` | A fazer (S5) |
+| C-7 RRF | `src/fusion.py` | **Feito**: 5 testes em `tests/test_fusion.py` (3 unitários + 2 `@pytest.mark.data`); `k=10` no `dev` (NDCG@10 = 0.3160) |
 | C-8 Reranking | `src/rerank.py` | A fazer (S6) |
 | C-9/C-10 Contexto + LLM | `src/rag_context.py`, `src/llm.py` | A fazer (S9) |
 | C-11 Avaliação humana | `src/human_eval.py` | A fazer (S9) |
 | C-12 Análises | `src/analysis.py` | A fazer (S10) |
 | C-13 CSVs | `src/results_writer.py` | A fazer (S8) |
-| C-14 Orquestrador | `src/orchestrator.py` | A fazer (S5) |
+| C-14 Orquestrador | `src/orchestrator.py` | **Feito**: 5 testes em `tests/test_split_guard.py` + `config/config.yaml` |
 
 ## Configuração técnica (detalhes em `docs/t2_decisoes.md`)
 
