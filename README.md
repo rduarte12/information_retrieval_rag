@@ -77,10 +77,10 @@ Criados durante a implementação: `scripts/`, `config/config.yaml`, `artifacts/
 | Componente | Módulo | Status |
 |---|---|---|
 | C-0 Carregador NFCorpus | `src/data_loader.py` | **Feito**: 10 testes em `tests/test_data_loader.py` (6 unitários + 4 `@pytest.mark.data`) |
-| C-1 Pré-processamento | `src/preprocessing.py` | A fazer (S2) |
+| C-1 Pré-processamento | `src/preprocessing.py` | **Feito**: `tokenize`, `preprocess`, `surface_vocab` (`stop_snowball`) |
 | C-2 Índice invertido | `src/inverted_index.py` | **Feito**: 28 testes em `tests/test_bm25.py` |
-| C-3 BM25 | `src/bm25.py` | **Feito**; geração das runs a fazer (S2) |
-| C-4 Correção ortográfica | `src/spell.py` | A fazer (S7) |
+| C-3 BM25 | `src/bm25.py` | **Feito**; geração das runs a fazer (S8) |
+| C-4 Correção ortográfica | `src/spell.py` | **Feito**: 8 testes em `tests/test_spell.py` (6 unitários + 2 `@pytest.mark.data`); `k=2, j=0.2, ed=1` |
 | C-5 Busca semântica | `src/dense.py` | **Feito**: 7 testes em `tests/test_dense.py` (4 unitários + 3 `@pytest.mark.data`); NDCG@10 dev = 0.2720 |
 | C-6 Avaliação | `src/evaluation.py` | **Feito**: 8 testes em `tests/test_evaluation.py` e `tests/test_eval_vs_ir_measures.py` (<= 1e-9 vs `ir_measures`) |
 | C-7 RRF | `src/fusion.py` | **Feito**: 5 testes em `tests/test_fusion.py` (3 unitários + 2 `@pytest.mark.data`); `k=10` no `dev` (NDCG@10 = 0.3160) |

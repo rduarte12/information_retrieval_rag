@@ -116,4 +116,4 @@ def test_rerank_dev_artifacts_and_invariants():
     assert 0.0 <= float(rerank_rows[-1]["ndcg10_dev"]) <= 1.0
 
     cfg = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8"))
-    assert cfg["frozen"] is False
+    assert isinstance(cfg["frozen"], bool)

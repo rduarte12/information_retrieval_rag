@@ -22,9 +22,9 @@ rerank:
   max_length: 512
   depth: 50
 spell:
-  k: null
-  jaccard_min: null
-  max_edit: null
+  k: 2
+  jaccard_min: 0.2
+  max_edit: 1
   distance: osa
 llm:
   model_id: gemini-3.1-flash-lite
@@ -35,4 +35,4 @@ llm:
   language: pt-BR
 runtime:
   torch_threads: 4
-frozen: false
+frozen: true
