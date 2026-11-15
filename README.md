@@ -81,7 +81,7 @@ Criados durante a implementação: `scripts/`, `config/config.yaml`, `artifacts/
 | C-2 Índice invertido | `src/inverted_index.py` | **Feito**: 28 testes em `tests/test_bm25.py` |
 | C-3 BM25 | `src/bm25.py` | **Feito**: run do `dev` gerada; run única do `test` na S8 |
 | C-4 Correção ortográfica | `src/spell.py` | A fazer (S7) |
-| C-5 Busca semântica | `src/dense.py` | A fazer (S4) |
+| C-5 Busca semântica | `src/dense.py` | **Feito**: 7 testes em `tests/test_dense.py` (4 unitários + 3 `@pytest.mark.data`); NDCG@10 dev = 0.2720 |
 | C-6 Avaliação | `src/evaluation.py` | **Feito**: 8 testes em `tests/test_evaluation.py` e `tests/test_eval_vs_ir_measures.py` (<= 1e-9 vs `ir_measures`) |
 | C-7 RRF | `src/fusion.py` | A fazer (S5) |
 | C-8 Reranking | `src/rerank.py` | A fazer (S6) |
