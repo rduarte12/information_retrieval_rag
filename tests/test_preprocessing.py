@@ -55,7 +55,7 @@ def test_preprocess_configurations():
     cfg_stem = {"remove_stopwords": False, "stemmer": "porter"}
     cfg_both = {"remove_stopwords": True, "stemmer": "porter"}
 
-    assert preprocess(text, cfg_raw) == [
+    assert preprocess(text, **cfg_raw) == [
         "the",
         "patients",
         "are",
@@ -64,8 +64,8 @@ def test_preprocess_configurations():
         "and",
         "running",
     ]
-    assert preprocess(text, cfg_stop) == ["patients", "eating", "apples", "running"]
-    assert preprocess(text, cfg_stem) == [
+    assert preprocess(text, **cfg_stop) == ["patients", "eating", "apples", "running"]
+    assert preprocess(text, **cfg_stem) == [
         "the",
         "patient",
         "are",
@@ -74,13 +74,13 @@ def test_preprocess_configurations():
         "and",
         "run",
     ]
-    assert preprocess(text, cfg_both) == ["patient", "eat", "appl", "run"]
+    assert preprocess(text, **cfg_both) == ["patient", "eat", "appl", "run"]
 
 
 def test_surface_vocab_document_frequency():
     docs = {
-        "D1": "Cancer diet. Cancer study!",
-        "D2": "Diet and health.",
+        "D1": {"title": "", "text": "Cancer diet. Cancer study!"},
+        "D2": {"title": "", "text": "Diet and health."},
     }
     vocab = surface_vocab(docs)
     # Frequência em documentos (DF), não TF
