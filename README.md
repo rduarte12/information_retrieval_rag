@@ -85,8 +85,8 @@ Criados durante a implementação: `scripts/`, `config/config.yaml`, `artifacts/
 | C-6 Avaliação | `src/evaluation.py` | **Feito**: 8 testes em `tests/test_evaluation.py` e `tests/test_eval_vs_ir_measures.py` (<= 1e-9 vs `ir_measures`) |
 | C-7 RRF | `src/fusion.py` | **Feito**: 5 testes em `tests/test_fusion.py` (3 unitários + 2 `@pytest.mark.data`); `k=10` no `dev` (NDCG@10 = 0.3160) |
 | C-8 Reranking | `src/rerank.py` | **Feito**: 4 testes em `tests/test_rerank.py` (3 unitários + 1 `@pytest.mark.data`); NDCG@10 dev = 0.3084 |
-| C-9/C-10 Contexto + LLM | `src/rag_context.py`, `src/llm.py` | A fazer (S9) |
-| C-11 Avaliação humana | `src/human_eval.py` | A fazer (S9) |
+| C-9/C-10 Contexto + LLM | `src/rag_context.py`, `src/llm.py` | **Implementado** (`contexts.json` + `rag_retrieval_metrics.csv` gerados; `responses.jsonl` aguarda `GEMINI_API_KEY`) |
+| C-11 Avaliação humana | `src/human_eval.py` | **Implementado** (4 testes em `tests/test_rag.py`; avaliação cega aguarda `responses.jsonl`) |
 | C-12 Análises | `src/analysis.py` | A fazer (S10) |
 | C-13 CSVs | `src/results_writer.py` | **Feito**: 3 testes em `tests/test_results_schema.py` + `scripts/run_test.py` (`test_run.lock` criado) |
 | C-14 Orquestrador | `src/orchestrator.py` | **Feito**: 5 testes em `tests/test_split_guard.py` + `config/config.yaml` |
