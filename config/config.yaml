@@ -18,7 +18,7 @@ rrf:
   depth: 100
 rerank:
   model_id: cross-encoder/ms-marco-MiniLM-L2-v2
-  revision: null
+  revision: 1b5cd67b15209f24824c50370e0397743aa9b787
   max_length: 512
   depth: 50
 spell:
