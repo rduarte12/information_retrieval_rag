@@ -132,3 +132,99 @@ def unblind_and_summarize(
             )
 
     return unblinded
+
+
+RAG_EXPERIMENT_FIELDNAMES = [
+    "query_id",
+    "query",
+    "condition",
+    "context_doc_ids",
+    "prompt",
+    "answer",
+    "fidelidade",
+    "completude",
+    "utilidade",
+    "rastreabilidade",
+    "just_fidelidade",
+    "just_completude",
+    "just_utilidade",
+    "just_rastreabilidade",
+    "fidelity_reference_doc_ids",
+    "model_id",
+    "model_version",
+    "temperature",
+    "seed",
+    "max_output_tokens",
+    "language",
+]
+
+
+def export_rag_experiment_csv(
+    unblinded_rows: list[dict[str, Any]],
+    responses_jsonl: Path | str,
+    out_csv: Path | str,
+) -> Path:
+    """Export final rag_experiment.csv matching TDS section 2.7 schema."""
+    responses_by_key: dict[tuple[str, str], dict[str, Any]] = {}
+    ref_docs_by_query: dict[str, str] = {}
+    with Path(responses_jsonl).open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            rec = json.loads(line)
+            qid = rec["query_id"]
+            cond = rec["condition"]
+            responses_by_key[(qid, cond)] = rec
+            if cond == "B":
+                ref_docs_by_query[qid] = ";".join(rec.get("context_doc_ids", []))
+
+    out_path = Path(out_csv)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    sorted_rows = sorted(unblinded_rows, key=lambda r: (r["query_id"], r["condition"]))
+
+    with out_path.open("w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(
+            f,
+            fieldnames=RAG_EXPERIMENT_FIELDNAMES,
+            lineterminator="\n",
+        )
+        writer.writeheader()
+        for row in sorted_rows:
+            qid = row["query_id"]
+            cond = row["condition"]
+            resp = responses_by_key[(qid, cond)]
+            params = resp.get("params", {})
+            ctx_ids = ";".join(resp.get("context_doc_ids", [])) if cond == "B" else ""
+            just_rast = (
+                "Sem contexto externo (condição A)"
+                if cond == "A"
+                else row["just_rastreabilidade"]
+            )
+            writer.writerow(
+                {
+                    "query_id": qid,
+                    "query": row["question"],
+                    "condition": cond,
+                    "context_doc_ids": ctx_ids,
+                    "prompt": resp["prompt"],
+                    "answer": resp["answer"],
+                    "fidelidade": int(row["fidelidade"]),
+                    "completude": int(row["completude"]),
+                    "utilidade": int(row["utilidade"]),
+                    "rastreabilidade": "N/A" if cond == "A" else row["rastreabilidade"],
+                    "just_fidelidade": row["just_fidelidade"],
+                    "just_completude": row["just_completude"],
+                    "just_utilidade": row["just_utilidade"],
+                    "just_rastreabilidade": just_rast,
+                    "fidelity_reference_doc_ids": ref_docs_by_query.get(qid, ""),
+                    "model_id": resp["model_id"],
+                    "model_version": resp["model_version"],
+                    "temperature": params.get("temperature", ""),
+                    "seed": params.get("seed", ""),
+                    "max_output_tokens": params.get("max_output_tokens", ""),
+                    "language": params.get("language", ""),
+                }
+            )
+    return out_path
+

@@ -16,7 +16,7 @@ A avaliação usa P@10, R@10, MAP@10 e NDCG@10, e o experimento de RAG compara r
 | Rafael Mendonça Duarte | 16817608 | Especificação (requisitos, arquitetura, TDS) e busca lexical (reaproveitada do T1) |
 | Joao Pedro Correa Caetano | 16987067 | Implementação dos demais componentes e experimentos |
 
-> **Status:** em desenvolvimento. A especificação está concluída. O índice invertido e o BM25 estão implementados e testados. Os demais componentes estão por implementar (ver [Status](#status-dos-componentes)).
+> **Status:** concluído. Todos os componentes (C-0 a C-14), experimentos (`dev`, `test`, `typo`, `rag`) e análises estão implementados e testados (86 testes passando; ver [Status](#status-dos-componentes)).
 
 ---
 
@@ -85,9 +85,9 @@ Criados durante a implementação: `scripts/`, `config/config.yaml`, `artifacts/
 | C-6 Avaliação | `src/evaluation.py` | **Feito**: 8 testes em `tests/test_evaluation.py` e `tests/test_eval_vs_ir_measures.py` (<= 1e-9 vs `ir_measures`) |
 | C-7 RRF | `src/fusion.py` | **Feito**: 5 testes em `tests/test_fusion.py` (3 unitários + 2 `@pytest.mark.data`); `k=10` no `dev` (NDCG@10 = 0.3160) |
 | C-8 Reranking | `src/rerank.py` | **Feito**: 4 testes em `tests/test_rerank.py` (3 unitários + 1 `@pytest.mark.data`); NDCG@10 dev = 0.3084 |
-| C-9/C-10 Contexto + LLM | `src/rag_context.py`, `src/llm.py` | **Implementado** (`contexts.json` + `rag_retrieval_metrics.csv` gerados; `responses.jsonl` aguarda `GEMINI_API_KEY`) |
-| C-11 Avaliação humana | `src/human_eval.py` | **Implementado** (4 testes em `tests/test_rag.py`; avaliação cega aguarda `responses.jsonl`) |
-| C-12 Análises | `src/analysis.py` | **Feito**: 4 testes em `tests/test_analysis.py`; `rf7_*` e `rf10_*` gerados (`rf14_trace.csv` aguarda `scores.csv`) |
+| C-9/C-10 Contexto + LLM | `src/rag_context.py`, `src/llm.py` | **Feito** (`contexts.json`, `rag_retrieval_metrics.csv`, `responses.jsonl` gerados) |
+| C-11 Avaliação humana | `src/human_eval.py` | **Feito**: 4 testes em `tests/test_rag.py`; `human_eval_summary.csv` + `results/rag_experiment.csv` |
+| C-12 Análises | `src/analysis.py` | **Feito**: 4 testes em `tests/test_analysis.py`; `rf7_*`, `rf10_*` e `rf14_trace.csv` gerados |
 | C-13 CSVs | `src/results_writer.py` | **Feito**: 3 testes em `tests/test_results_schema.py` + `scripts/run_test.py` (`test_run.lock` criado) |
 | C-14 Orquestrador | `src/orchestrator.py` | **Feito**: 5 testes em `tests/test_split_guard.py` + `config/config.yaml` |
 
@@ -97,10 +97,10 @@ Criados durante a implementação: `scripts/`, `config/config.yaml`, `artifacts/
 |---|---|
 | Tokenização | minúsculas + regex `[a-z0-9]+`, sem pontuação (D8) |
 | Busca lexical | BM25 (k1 = 1,2; b = 0,75), índice invertido próprio (D1) |
-| Bi-encoder | `sentence-transformers/multi-qa-MiniLM-L6-cos-v1`, cosseno, busca exaustiva, texto cru (D4) |
-| Fusão | RRF, k ∈ {10, 60, 100} escolhido no dev |
-| Cross-encoder | `cross-encoder/ms-marco-MiniLM-L2-v2`, top-50 do híbrido (D5) |
-| LLM (RAG) | `gemini-3.1-flash-lite`, Gemini API, free tier (D2) |
+| Bi-encoder | `sentence-transformers/multi-qa-MiniLM-L6-cos-v1` (rev `b207367332321f8e44f96e224ef15bc607f4dbf0`), cosseno, busca exaustiva, texto cru (D4) |
+| Fusão | RRF, `k = 10` escolhido no `dev` |
+| Cross-encoder | `cross-encoder/ms-marco-MiniLM-L2-v2` (rev `1b5cd67b15209f24824c50370e0397743aa9b787`), top-50 do híbrido (D5) |
+| LLM (RAG) | `gemini-3.1-flash-lite`, Gemini API, free tier, `temperature=0.0`, `seed=42`, `max_output_tokens=1024`, `language=pt-BR` (D2) |
 | Hardware de referência | CPU Intel i5 (4 threads), 20 GB RAM, sem GPU |
 
 ## Instalação e execução
@@ -113,20 +113,24 @@ git config core.hooksPath .githooks        # OBRIGATÓRIO: ativa o hook anti-atr
 python -m venv .venv
 source .venv/bin/activate                  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-pytest                                     # 28 testes devem passar
+pytest                                     # 86 testes devem passar
 
 # Dados: baixar e extrair em data/nfcorpus/
 #   https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/nfcorpus.zip
 cp .env.example .env                       # definir GEMINI_API_KEY (nunca versionar)
 ```
 
-Execução prevista (a criar nas sprints S5–S9):
+Ordem de execução para reproduzir os experimentos:
 
 ```bash
-python scripts/run_dev.py     # ajustes e validações no dev; congela o config
-python scripts/run_test.py    # execução única no test → results/*.csv
-python scripts/run_typo.py    # experimento de erros ortográficos (RF-4)
-python scripts/run_rag.py     # RAG A/B (RF-11/12); depois a avaliação humana (RF-13)
+python -m src.dense --split dev       # validação semântica no dev
+python -m src.fusion --split dev      # grade RRF k ∈ {10, 60, 100} no dev
+python -m src.rerank --split dev      # validação do cross-encoder no dev
+python scripts/run_test.py            # execução única no test (config congelado) → results/*.csv
+python -m src.spell                   # experimento isolado de erros ortográficos → results/typo_experiment.csv
+python -m src.rag_context             # seleção de contexto Top-5 e métricas do RAG
+python -m src.llm                     # geração A/B com Gemini e planilha cega
+python -m src.analysis                # análises RF-7, RF-10 e RF-14 → artifacts/analysis/*.csv
 ```
 
 Versão do Python e das bibliotecas: **Python 3.14.10**; versões exatas das bibliotecas fixadas em [`requirements.txt`](requirements.txt).
