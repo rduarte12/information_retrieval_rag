@@ -1,0 +1,46 @@
+{
+  "descricao": "Concordância entre dois avaliadores, ambos às cegas (sem saber a condição de cada resposta). Rastreabilidade só na condição B.",
+  "n_notas": 70,
+  "n_divergencias": 20,
+  "diferenca_maxima": 1,
+  "por_criterio": {
+    "fidelidade": {
+      "n": 20,
+      "acordo_exato": 0.8,
+      "acordo_dif_le_1": 1.0,
+      "kappa_cohen": 0.661,
+      "kappa_ponderado_quadratico": 0.8157,
+      "media_rafael": 1.35,
+      "media_joao": 1.45
+    },
+    "completude": {
+      "n": 20,
+      "acordo_exato": 0.65,
+      "acordo_dif_le_1": 1.0,
+      "kappa_cohen": 0.2553,
+      "kappa_ponderado_quadratico": 0.5625,
+      "media_rafael": 1.5,
+      "media_joao": 1.75
+    },
+    "utilidade": {
+      "n": 20,
+      "acordo_exato": 0.65,
+      "acordo_dif_le_1": 1.0,
+      "kappa_cohen": 0.2513,
+      "kappa_ponderado_quadratico": 0.4776,
+      "media_rafael": 1.6,
+      "media_joao": 1.65
+    },
+    "rastreabilidade": {
+      "n": 10,
+      "acordo_exato": 0.8,
+      "acordo_dif_le_1": 1.0,
+      "kappa_cohen": null,
+      "kappa_ponderado_quadratico": null,
+      "media_rafael": 2.0,
+      "media_joao": 1.8,
+      "obs": "kappa indefinido: um avaliador deu a mesma nota a todos os itens"
+    }
+  },
+  "acordo_exato_global": 0.7143
+}

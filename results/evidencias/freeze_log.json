@@ -1,0 +1,60 @@
+[
+  {
+    "config_hash": "def9b015ad2a1c5f3e98c1be2a0bca346f8f2892b71c9e0578436b82ec43e227",
+    "frozen_at": "2026-11-24T23:49:38.487762+00:00",
+    "stage_results": {
+      "rrf": {
+        "file": "artifacts\\dev\\rrf_k_dev.csv",
+        "sha256": "36295d8c85e448199fe4ee2b7b1ec8564b1e564671e83040cf34371975e1b93d",
+        "timestamp": "2026-11-24T23:49:38.510489+00:00"
+      },
+      "hybrid_dev": {
+        "file": "artifacts\\runs\\hybrid_dev.trec",
+        "sha256": "a60dbf9bb3f2460beff172ecc7d1a45a3fc536a267072c2468695a7f9376ccd8",
+        "timestamp": "2026-11-24T23:49:38.590987+00:00"
+      },
+      "rerank_val": {
+        "file": "artifacts\\runs\\reranking_dev.trec",
+        "sha256": "c3d211571a1d338f71e4a347674695106f7cbae881b053ff33c0d0bdb8edeb15",
+        "timestamp": "2026-11-25T00:02:56.238066+00:00"
+      }
+    }
+  },
+  {
+    "config_hash": "def9b015ad2a1c5f3e98c1be2a0bca346f8f2892b71c9e0578436b82ec43e227",
+    "frozen_at": "2026-11-25T00:07:07.533990+00:00",
+    "stage_results": {
+      "spell": {
+        "file": "artifacts\\dev\\spell_grid_dev.csv",
+        "sha256": "395030468ce6aa38eb9920d55146a53b35de1e2e3e04e7db1b04a6abae9c86d9",
+        "timestamp": "2026-11-25T00:07:07.579901+00:00"
+      },
+      "typo": {
+        "file": "results\\typo_experiment.csv",
+        "sha256": "54a7675c352d51b9d7053912f4f740be17eaa902af056f2d8f3aa28dbb27da26",
+        "timestamp": "2026-11-25T00:07:12.282056+00:00"
+      },
+      "test": {
+        "file": "results\\metrics_per_query.csv",
+        "sha256": "08df772ed61600ccb47a4ba470687be3c190a6f1dc57432e4049365f657202c2",
+        "timestamp": "2026-11-25T00:20:04.035210+00:00"
+      }
+    }
+  },
+  {
+    "config_hash": "def9b015ad2a1c5f3e98c1be2a0bca346f8f2892b71c9e0578436b82ec43e227",
+    "frozen_at": "2026-11-25T00:46:27.859721+00:00",
+    "stage_results": {
+      "spell": {
+        "file": "artifacts\\dev\\spell_grid_dev.csv",
+        "sha256": "395030468ce6aa38eb9920d55146a53b35de1e2e3e04e7db1b04a6abae9c86d9",
+        "timestamp": "2026-11-25T00:46:27.868004+00:00"
+      },
+      "typo": {
+        "file": "results\\typo_experiment.csv",
+        "sha256": "c202a7db46523c3d05a013c81cad5d411fa1779151a5cad590c6e3e56415de16",
+        "timestamp": "2026-11-25T00:46:29.230074+00:00"
+      }
+    }
+  }
+]

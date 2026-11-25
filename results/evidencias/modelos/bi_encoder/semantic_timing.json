@@ -1,0 +1,13 @@
+{
+  "model_id": "sentence-transformers/multi-qa-MiniLM-L6-cos-v1",
+  "n_queries": 323,
+  "split": "test",
+  "torch_threads": 4,
+  "consulta_a_consulta_ms": {
+    "media": 8.046,
+    "mediana": 7.832,
+    "max": 18.526
+  },
+  "lote_media_por_consulta_ms": 1.513,
+  "batch_size": 32
+}

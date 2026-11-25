@@ -1,0 +1,8 @@
+condition,criterio,media,n
+A,completude,1.4000,10
+A,fidelidade,0.8000,10
+A,utilidade,1.4000,10
+B,completude,1.9000,10
+B,fidelidade,2.0000,10
+B,rastreabilidade,1.9000,10
+B,utilidade,1.8000,10

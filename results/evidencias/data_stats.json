@@ -1,0 +1,28 @@
+{
+  "n_docs": 3633,
+  "n_queries_total": 3237,
+  "splits": {
+    "dev": {
+      "n_queries": 324,
+      "n_judgments": 11385,
+      "grade_distribution": {
+        "1": 10864,
+        "2": 521
+      },
+      "n_queries_zero_rel": 0,
+      "zero_rel_query_ids": [],
+      "avg_rel_per_query": 35.138888888888886
+    },
+    "test": {
+      "n_queries": 323,
+      "n_judgments": 12334,
+      "grade_distribution": {
+        "1": 11758,
+        "2": 576
+      },
+      "n_queries_zero_rel": 0,
+      "zero_rel_query_ids": [],
+      "avg_rel_per_query": 38.18575851393189
+    }
+  }
+}

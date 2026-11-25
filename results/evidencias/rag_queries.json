@@ -1,0 +1,28 @@
+{
+  "seed": 42,
+  "n_eligible": 42,
+  "query_ids": [
+    "PLAIN-68",
+    "PLAIN-2450",
+    "PLAIN-153",
+    "PLAIN-2850",
+    "PLAIN-2750",
+    "PLAIN-270",
+    "PLAIN-2470",
+    "PLAIN-2430",
+    "PLAIN-238",
+    "PLAIN-3342"
+  ],
+  "queries": {
+    "PLAIN-68": "What is Actually in Chicken Nuggets?",
+    "PLAIN-2450": "Are Organic Foods Safer?",
+    "PLAIN-153": "How Should I Take Probiotics?",
+    "PLAIN-2850": "More Antibiotics In White Meat or Dark Meat?",
+    "PLAIN-2750": "Preventing the Common Cold with Probiotics?",
+    "PLAIN-270": "Is Caffeinated Tea Really Dehydrating?",
+    "PLAIN-2470": "Is Milk Good for Our Bones?",
+    "PLAIN-2430": "Preventing Brain Loss with B Vitamins?",
+    "PLAIN-238": "How Chemically Contaminated Are We?",
+    "PLAIN-3342": "Is Coconut Milk Good For You?"
+  }
+}

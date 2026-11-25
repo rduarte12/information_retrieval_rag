@@ -1,0 +1,142 @@
+[
+  {
+    "query_id": "PLAIN-332",
+    "tipo_erro": "insercao",
+    "log": [
+      {
+        "term": "akntioxidant",
+        "n_kgram_candidates": 9612,
+        "n_after_jaccard": 168,
+        "chosen": "antioxidant",
+        "edit_distance": 1,
+        "reason": "corrected"
+      }
+    ]
+  },
+  {
+    "query_id": "PLAIN-1453",
+    "tipo_erro": "remocao",
+    "log": [
+      {
+        "term": "juk",
+        "n_kgram_candidates": 360,
+        "n_after_jaccard": 30,
+        "chosen": "uk",
+        "edit_distance": 1,
+        "reason": "corrected"
+      }
+    ]
+  },
+  {
+    "query_id": "PLAIN-1141",
+    "tipo_erro": "substituicao",
+    "log": [
+      {
+        "term": "evidenre",
+        "n_kgram_candidates": 8984,
+        "n_after_jaccard": 236,
+        "chosen": "evidence",
+        "edit_distance": 1,
+        "reason": "corrected"
+      }
+    ]
+  },
+  {
+    "query_id": "PLAIN-571",
+    "tipo_erro": "transposicao",
+    "log": [
+      {
+        "term": "anisaksi",
+        "n_kgram_candidates": 6946,
+        "n_after_jaccard": 83,
+        "chosen": "anisakis",
+        "edit_distance": 1,
+        "reason": "corrected"
+      }
+    ]
+  },
+  {
+    "query_id": "PLAIN-2051",
+    "tipo_erro": "insercao",
+    "log": [
+      {
+        "term": "saturatyed",
+        "n_kgram_candidates": 9100,
+        "n_after_jaccard": 299,
+        "chosen": "saturated",
+        "edit_distance": 1,
+        "reason": "corrected"
+      }
+    ]
+  },
+  {
+    "query_id": "PLAIN-1950",
+    "tipo_erro": "remocao",
+    "log": [
+      {
+        "term": "runes",
+        "n_kgram_candidates": 8359,
+        "n_after_jaccard": 513,
+        "chosen": "rules",
+        "edit_distance": 1,
+        "reason": "corrected"
+      }
+    ]
+  },
+  {
+    "query_id": "PLAIN-1857",
+    "tipo_erro": "substituicao",
+    "log": [
+      {
+        "term": "phytiu",
+        "n_kgram_candidates": 6322,
+        "n_after_jaccard": 76,
+        "chosen": "phytic",
+        "edit_distance": 1,
+        "reason": "corrected"
+      }
+    ]
+  },
+  {
+    "query_id": "PLAIN-1557",
+    "tipo_erro": "transposicao",
+    "log": [
+      {
+        "term": "mangesium",
+        "n_kgram_candidates": 9094,
+        "n_after_jaccard": 160,
+        "chosen": "magnesium",
+        "edit_distance": 1,
+        "reason": "corrected"
+      }
+    ]
+  },
+  {
+    "query_id": "PLAIN-561",
+    "tipo_erro": "insercao",
+    "log": [
+      {
+        "term": "aneurhysm",
+        "n_kgram_candidates": 6795,
+        "n_after_jaccard": 44,
+        "chosen": "aneurysm",
+        "edit_distance": 1,
+        "reason": "corrected"
+      }
+    ]
+  },
+  {
+    "query_id": "PLAIN-143",
+    "tipo_erro": "remocao",
+    "log": [
+      {
+        "term": "dentl",
+        "n_kgram_candidates": 6489,
+        "n_after_jaccard": 291,
+        "chosen": "dental",
+        "edit_distance": 1,
+        "reason": "corrected"
+      }
+    ]
+  }
+]

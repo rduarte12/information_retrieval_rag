@@ -1,0 +1,21 @@
+{
+  "model_id": "sentence-transformers/multi-qa-MiniLM-L6-cos-v1",
+  "revision": "b207367332321f8e44f96e224ef15bc607f4dbf0",
+  "library_versions": {
+    "torch": "2.15.0+cpu",
+    "transformers": "5.23.0",
+    "sentence_transformers": "6.3.0"
+  },
+  "dim": 384,
+  "max_seq_length": 512,
+  "pooling": "mean",
+  "normalized": true,
+  "similarity": "cosine",
+  "doc_representation": "title + \" \" + text",
+  "n_docs": 3633,
+  "n_truncated": 330,
+  "pct_truncated": 9.0834,
+  "encode_time_s": 315.7988,
+  "hardware": "AMD64 (Intel64 Family 6 Model 140 Stepping 2, GenuineIntel), torch_threads=4",
+  "npy_sha256": "5b9802471978a6f8406a72e710e8700ffce080b23bcce7405271c21256a2225e"
+}

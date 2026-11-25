@@ -1,156 +1,121 @@
-# Trabalho Prático 2 — Busca Lexical, Semântica, Híbrida e RAG (SCC0282, RI 2026)
+# Trabalho Prático 2: Busca Lexical, Semântica, Híbrida e RAG
 
-Sistema de Recuperação de Informação sobre o **NFCorpus (BEIR)** que combina:
-- busca lexical (BM25 sobre índice invertido próprio);
-- busca semântica (bi-encoder);
-- fusão híbrida (RRF);
-- reranking (cross-encoder);
-- RAG com LLM.
+SCC0282 Recuperação de Informação, ICMC-USP, 2º semestre de 2026.
 
-A avaliação usa P@10, R@10, MAP@10 e NDCG@10, e o experimento de RAG compara respostas com e sem contexto.
+| Integrante | Nº USP |
+|---|---|
+| Rafael Mendonça Duarte | 16817608 |
+| João Pedro Correia Caetano | 16987067 |
 
-**Disciplina:** SCC0282 — Recuperação de Informação, ICMC-USP, 2º semestre de 2026 · **Prazo:** 19/11/2026, 23:59
+Este repositório contém um sistema de recuperação de informação sobre o NFCorpus (versão do BEIR). O pipeline tem cinco etapas:
 
-| Integrante | Nº USP | Papel |
-|---|---|---|
-| Rafael Mendonça Duarte | 16817608 | Especificação (requisitos, arquitetura, TDS) e busca lexical (reaproveitada do T1) |
-| Joao Pedro Correa Caetano | 16987067 | Implementação dos demais componentes e experimentos |
+1. busca lexical com BM25 sobre um índice invertido implementado pelo grupo;
+2. busca semântica com um bi-encoder;
+3. fusão dos dois rankings com RRF;
+4. reranking do top 50 híbrido com um cross-encoder;
+5. geração de respostas com RAG usando o Gemini.
 
-> **Status:** concluído. Todos os componentes (C-0 a C-14), experimentos (`dev`, `test`, `typo`, `rag`) e análises estão implementados e testados (86 testes passando; ver [Status](#status-dos-componentes)).
+A avaliação usa P@10, R@10, MAP@10 e NDCG@10 no split de teste. O experimento de RAG compara respostas sem contexto (condição A) e com os 5 primeiros documentos recuperados (condição B).
 
----
-
-## Como analisar este repositório
-
-Leia nesta ordem. Cada documento parte do anterior e não repete o conteúdo dele.
-
-| # | Arquivo | O que é | Quando consultar |
-|---|---|---|---|
-| 0 | `docs/enunciado/Trabalho_Pratico_2_RI_2026.pdf` | Enunciado oficial | Fonte de verdade em qualquer dúvida |
-| 1 | `docs/t2_requisitos.md` | **O quê** fazer: os 15 requisitos (RF-1…RF-15), restrições críticas (C1…C22), métricas, schemas mínimos, ambiguidades | Para saber se algo é obrigatório |
-| 2 | `docs/t2_decisoes.md` | Log de decisões (D1…D10): modelos, LLM, regras de escopo | Antes de escolher qualquer modelo ou parâmetro |
-| 3 | `docs/t2_arquitetura.md` | Componentes C-0…C-14, interfaces, fluxo (diagramas Mermaid), armazenamento, riscos | Para entender como as peças se conectam |
-| 4 | `docs/t2_tds.md` | **Como** implementar: contratos de I/O, sub-tarefas, critérios de conclusão verificáveis, schemas exatos dos CSVs, checklist final | Durante a implementação; é o documento de trabalho |
-| 5 | `docs/t2_plano_execucao.md` | Ordem das sprints, checklists e **testes-contrato** de cada etapa | Para saber o que fazer a seguir |
-| 6 | `docs/t2_busca_lexical_bm25_contexto.md` | Como o BM25 do T1 foi adaptado (índice invertido refeito do zero) | Ao mexer em `src/inverted_index.py` ou `src/bm25.py` |
-| — | `AGENTS.md` | Regras para assistentes de IA (e humanos) que trabalham no código | **Obrigatório** antes de usar qualquer LLM no repositório |
-
-**Precedência em caso de conflito:** enunciado > requisitos > decisões > arquitetura > TDS > plano. Um conflito encontrado é registrado em `docs/t2_decisoes.md`, e não resolvido em silêncio no código.
-
-**Convenção de IDs:**
-- `RF-N`: requisito N do enunciado;
-- `Cn`: restrição crítica;
-- `C-N`: componente da arquitetura;
-- `TDS-N`: especificação do componente C-N;
-- `Dn`: decisão;
-- `TDS-DEC-n`: decisão de implementação;
-- `Sn`: sprint do plano.
-
-> Os documentos de `docs/t2_*.md`, `AGENTS.md`, `CLAUDE.md` e `.claude/` apoiam o desenvolvimento com IA e serão **removidos antes da entrega** (decisão D10).
-
----
-
-## Estrutura
-
-```
-.
-├── README.md
-├── AGENTS.md                         # regras para agentes de IA
-├── CLAUDE.md                         # aponta para AGENTS.md (Claude Code)
-├── .claude/settings.json             # Claude Code sem atribuição em commits/PRs
-├── .githooks/                        # hook commit-msg que bloqueia atribuição de IA
-├── .github/workflows/                # mesma verificação no GitHub (Actions)
-├── docs/                             # especificação (ver tabela acima)
-├── src/                              # um módulo por componente (TDS §0.4)
-│   ├── inverted_index.py             # C-2 — implementado
-│   └── bm25.py                       # C-3 — implementado
-├── tests/                            # pytest: testes-contrato (ver plano)
-│   └── reference/bm25_t1.py          # BM25 original do T1, só como oráculo de regressão
-├── results/                          # os 7 CSVs entregues (RF-15)
-└── requirements.txt
-```
-
-Criados durante a implementação: `scripts/`, `config/config.yaml`, `artifacts/` (não versionado), `data/` (não versionado).
-
-## Status dos componentes
-
-| Componente | Módulo | Status |
-|---|---|---|
-| C-0 Carregador NFCorpus | `src/data_loader.py` | **Feito**: 10 testes em `tests/test_data_loader.py` (6 unitários + 4 `@pytest.mark.data`) |
-| C-1 Pré-processamento | `src/preprocessing.py` | **Feito**: `tokenize`, `preprocess`, `surface_vocab` (`stop_snowball`) |
-| C-2 Índice invertido | `src/inverted_index.py` | **Feito**: 28 testes em `tests/test_bm25.py` |
-| C-3 BM25 | `src/bm25.py` | **Feito**: runs de `dev` e `test` geradas (`NDCG@10` test = 0.3281) |
-| C-4 Correção ortográfica | `src/spell.py` | **Feito**: 8 testes em `tests/test_spell.py` (6 unitários + 2 `@pytest.mark.data`); `k=2, j=0.2, ed=1` |
-| C-5 Busca semântica | `src/dense.py` | **Feito**: 7 testes em `tests/test_dense.py` (4 unitários + 3 `@pytest.mark.data`); NDCG@10 dev = 0.2720 |
-| C-6 Avaliação | `src/evaluation.py` | **Feito**: 8 testes em `tests/test_evaluation.py` e `tests/test_eval_vs_ir_measures.py` (<= 1e-9 vs `ir_measures`) |
-| C-7 RRF | `src/fusion.py` | **Feito**: 5 testes em `tests/test_fusion.py` (3 unitários + 2 `@pytest.mark.data`); `k=10` no `dev` (NDCG@10 = 0.3160) |
-| C-8 Reranking | `src/rerank.py` | **Feito**: 4 testes em `tests/test_rerank.py` (3 unitários + 1 `@pytest.mark.data`); NDCG@10 dev = 0.3084 |
-| C-9/C-10 Contexto + LLM | `src/rag_context.py`, `src/llm.py` | **Feito** (`contexts.json`, `rag_retrieval_metrics.csv`, `responses.jsonl` gerados) |
-| C-11 Avaliação humana | `src/human_eval.py` | **Feito**: 4 testes em `tests/test_rag.py`; `human_eval_summary.csv` + `results/rag_experiment.csv` |
-| C-12 Análises | `src/analysis.py` | **Feito**: 4 testes em `tests/test_analysis.py`; `rf7_*`, `rf10_*` e `rf14_trace.csv` gerados |
-| C-13 CSVs | `src/results_writer.py` | **Feito**: 3 testes em `tests/test_results_schema.py` + `scripts/run_test.py` (`test_run.lock` criado) |
-| C-14 Orquestrador | `src/orchestrator.py` | **Feito**: 5 testes em `tests/test_split_guard.py` + `config/config.yaml` |
-
-## Configuração técnica (detalhes em `docs/t2_decisoes.md`)
+## Configuração
 
 | Item | Escolha |
 |---|---|
-| Tokenização | minúsculas + regex `[a-z0-9]+`, sem pontuação (D8) |
-| Busca lexical | BM25 (k1 = 1,2; b = 0,75), índice invertido próprio (D1) |
-| Bi-encoder | `sentence-transformers/multi-qa-MiniLM-L6-cos-v1` (rev `b207367332321f8e44f96e224ef15bc607f4dbf0`), cosseno, busca exaustiva, texto cru (D4) |
-| Fusão | RRF, `k = 10` escolhido no `dev` |
-| Cross-encoder | `cross-encoder/ms-marco-MiniLM-L2-v2` (rev `1b5cd67b15209f24824c50370e0397743aa9b787`), top-50 do híbrido (D5) |
-| LLM (RAG) | `gemini-3.1-flash-lite`, Gemini API, free tier, `temperature=0.0`, `seed=42`, `max_output_tokens=1024`, `language=pt-BR` (D2) |
-| Hardware de referência | CPU Intel i5 (4 threads), 20 GB RAM, sem GPU |
+| Pré-processamento | minúsculas, tokenização por regex `[a-z0-9]+`, remoção de stopwords (NLTK, inglês) e stemming Snowball, configuração escolhida no dev |
+| Busca lexical | BM25 com k1 = 1,2 e b = 0,75 sobre índice invertido próprio |
+| Bi-encoder | `sentence-transformers/multi-qa-MiniLM-L6-cos-v1` (revisão `b207367332321f8e44f96e224ef15bc607f4dbf0`), similaridade do cosseno, busca exaustiva, texto sem pré-processamento |
+| Fusão | RRF com k = 10, escolhido no dev entre {10, 60, 100} |
+| Cross-encoder | `cross-encoder/ms-marco-MiniLM-L2-v2` (revisão `1b5cd67b15209f24824c50370e0397743aa9b787`), aplicado ao top 50 do híbrido |
+| LLM | `gemini-3.1-flash-lite` pela Gemini API (free tier), temperature 0.0, seed 42, max_output_tokens 1024, respostas em português |
+| Correção ortográfica | k-gramas (k = 2), filtro de Jaccard (limiar 0,2) e distância de edição (máximo 1) |
+| Hardware de referência | CPU Intel i5 (4 threads), 20 GB de RAM, sem GPU |
+| Linguagem e bibliotecas | Python 3.14.10; numpy 2.5.4, pandas 3.1.1, nltk 3.10.4, torch 2.15.0 (CPU), transformers 5.23.0, sentence-transformers 6.3.0, ir_measures 0.4.3, google-genai 3.3.0, pytest 9.2.0 (lista completa em `requirements.txt`) |
 
-## Instalação e execução
+O split dev foi usado para todas as escolhas de parâmetros. O split test foi executado uma única vez, com a configuração já fixada.
+
+## Instalação
 
 ```bash
 git clone https://github.com/rduarte12/information_retrieval_rag.git
 cd information_retrieval_rag
-git config core.hooksPath .githooks        # OBRIGATÓRIO: ativa o hook anti-atribuição de IA
 
 python -m venv .venv
-source .venv/bin/activate                  # Windows: .venv\Scripts\activate
+source .venv/bin/activate            # no Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-pytest                                     # 86 testes devem passar
-
-# Dados: baixar e extrair em data/nfcorpus/
-#   https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/nfcorpus.zip
-cp .env.example .env                       # definir GEMINI_API_KEY (nunca versionar)
+python -c "import nltk; nltk.download('stopwords')"
 ```
 
-Ordem de execução para reproduzir os experimentos:
+## Base de dados
+
+Usamos o NFCorpus distribuído pelo BEIR (`corpus.jsonl`, `queries.jsonl` e `qrels/{train,dev,test}.tsv`). O script abaixo baixa a coleção do Hugging Face (`BeIR/nfcorpus` e `BeIR/nfcorpus-qrels`), grava os arquivos em `data/nfcorpus/` no formato do BEIR e confere as contagens (3633 documentos, 3237 consultas, 324 consultas de dev e 323 de teste com julgamentos):
 
 ```bash
-python -m src.dense --split dev       # validação semântica no dev
-python -m src.fusion --split dev      # grade RRF k ∈ {10, 60, 100} no dev
-python -m src.rerank --split dev      # validação do cross-encoder no dev
-python scripts/run_test.py            # execução única no test (config congelado) → results/*.csv
-python -m src.spell                   # experimento isolado de erros ortográficos → results/typo_experiment.csv
-python -m src.rag_context             # seleção de contexto Top-5 e métricas do RAG
-python -m src.llm                     # geração A/B com Gemini e planilha cega
-python -m src.analysis                # análises RF-7, RF-10 e RF-14 → artifacts/analysis/*.csv
+python scripts/baixar_nfcorpus_hf.py
 ```
 
-Versão do Python e das bibliotecas: **Python 3.14.10**; versões exatas das bibliotecas fixadas em [`requirements.txt`](requirements.txt).
+O mesmo conteúdo pode ser obtido no pacote original do BEIR: https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/nfcorpus.zip (extrair em `data/nfcorpus/`).
 
-## Regras do projeto (resumo)
+## Testes
 
-- O **test** é usado uma única vez, com a configuração congelada. Todo ajuste é feito no **dev**.
-- O índice invertido é implementado do zero; a busca lexical nunca percorre todos os documentos.
-- Os resultados entregues são os 7 CSVs de `results/` (schemas no TDS §2), não saídas de notebook.
-- Ranking lexical com menos de 100 documentos **não é completado**, e isso é registrado e informado no relatório (D7).
-- Não versionar: dataset, embeddings, modelos, índices serializados, `.env`.
+```bash
+pytest -m "not data"     # 79 testes que não dependem do dataset
+pytest -m data           # 17 testes que leem data/nfcorpus/
+pytest                   # os 96 testes
+```
 
-## Autoria e uso de IA
+## Execução
 
-Assistentes de IA são usados como apoio; o uso é declarado no relatório. **Commits e PRs têm apenas os integrantes como autores.** Três travas garantem isso (D9):
+Os comandos abaixo reproduzem os experimentos na ordem em que dependem um do outro. Não é preciso configurar `PYTHONPATH`.
 
-1. **Configuração da ferramenta.** No Claude Code, `.claude/settings.json` (já no repositório) contém:
-   ```json
-   { "attribution": { "commit": "", "pr": "" } }
-   ```
-   Em outras ferramentas (Copilot, Codex, Cursor etc.), desative a opção equivalente de coautoria ou assinatura.
-2. **Hook local** `.githooks/commit-msg`. Recusa commits com trailers `Co-authored-by` de IA, "Generated with …", `Claude-Session:`, 🤖 ou autor bot. É versionado, mas o Git só o executa depois de `git config core.hooksPath .githooks`, uma vez por clone.
-3. **GitHub Action** `.github/workflows/no-ai-attribution.yml`. Repete a verificação em todo push e PR; pega o que escapar do hook (ex.: `--no-verify`).
+```bash
+python scripts/run_s2_dev.py          # índice, BM25 e comparação de pré-processamento no dev
+python -m src.dense --split dev       # busca semântica no dev
+python -m src.fusion --split dev      # escolha do k do RRF no dev
+python -m src.rerank --split dev      # reranking no dev
+python scripts/run_test.py            # execução única no test, gera os CSVs de results/
+python -m src.spell                   # experimento de erros ortográficos, gera results/typo_experiment.csv
+python -m src.rag_context             # seleção do contexto top 5 e métricas de recuperação do RAG
+python -m src.llm                     # geração das respostas A e B com o Gemini
+python -m src.analysis                # análises por consulta (lexical x semântico, reranking, falhas do RAG)
+python scripts/medir_tempo_semantico.py   # tempo médio por consulta da busca semântica
+python scripts/gerar_figuras.py           # figuras do relatório em results/figuras/
+python scripts/verificar_resultados.py
+python scripts/export_evidencias.py
+```
+
+Só o `src.llm` precisa de chave de API. Copie `.env.example` para `.env` e preencha `GEMINI_API_KEY`. O arquivo `.env` não é versionado. As respostas avaliadas estão em `results/rag_experiment.csv`. Uma nova execução do `src.llm` gera respostas novas, que podem não ser idênticas às avaliadas, mesmo com temperature 0.
+
+Os experimentos foram executados em partes, em duas máquinas diferentes. Por isso, alguns valores intermediários podem diferir por arredondamento de ponto flutuante, como a ordem de documentos com scores praticamente empatados abaixo do top 10. As métricas reportadas são as mesmas nas duas máquinas.
+
+## Resultados
+
+Os arquivos pedidos no enunciado estão em `results/`:
+
+| Arquivo | Conteúdo |
+|---|---|
+| `results_lexical.csv` | rankings do BM25 no test |
+| `results_semantic.csv` | rankings do bi-encoder no test |
+| `results_hybrid.csv` | rankings do RRF no test |
+| `results_reranking.csv` | rankings do cross-encoder no test |
+| `metrics_per_query.csv` | P@10, R@10, MAP@10 e NDCG@10 por consulta e por sistema |
+| `typo_experiment.csv` | consultas original, com erro e corrigida, com o NDCG@10 das buscas lexical e semântica em cada uma |
+| `rag_experiment.csv` | respostas das condições A e B, notas e justificativas |
+
+A pasta `results/figuras/` tem as figuras do relatório, geradas por `scripts/gerar_figuras.py` a partir dos CSVs acima. A pasta `results/evidencias/` reúne os arquivos usados nas tabelas e análises do relatório:
+
+| Pasta | Conteúdo |
+|---|---|
+| `indice/` | estatísticas do índice e número de candidatos lexicais por consulta |
+| `dev/` | comparação de pré-processamento, escolha do k do RRF, grade da correção ortográfica e validação no dev |
+| `modelos/` | modelos, revisões, truncamento e tempos do bi-encoder e do cross-encoder |
+| `typo/` | erros introduzidos e robustez das buscas lexical e semântica |
+| `rag/` | contexto enviado à LLM, métricas de recuperação, notas de cada avaliador, concordância e resumo da avaliação |
+| `analise/` | casos por consulta: lexical x semântico, mudanças de posição no reranking e rastreio das falhas do RAG |
+
+As respostas do RAG foram avaliadas pelos dois integrantes, de forma independente e às cegas (sem saber a condição de cada resposta), nos critérios fidelidade, completude, utilidade e rastreabilidade (notas de 0 a 2). A concordância foi medida com o kappa de Cohen, e as divergências foram resolvidas por consenso. As notas finais são as de consenso.
+
+## Observações
+
+- O índice invertido foi implementado do zero, e a busca lexical consulta apenas as listas de postings dos termos da consulta, sem percorrer a coleção.
+- Quando o BM25 encontra menos de 100 documentos com algum termo da consulta, o ranking lexical não é completado artificialmente. No test, 127 das 323 consultas têm menos de 100 candidatos, e 15 não têm nenhum.
+- Não são versionados o dataset, os embeddings, os modelos, os índices serializados, a pasta `artifacts/` e o `.env`.

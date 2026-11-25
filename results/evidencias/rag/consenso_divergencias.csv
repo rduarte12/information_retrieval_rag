@@ -1,0 +1,21 @@
+query_id,condition,criterio,nota_rafael,nota_joao,nota_final,justificativa_final
+PLAIN-2430,A,fidelidade,1,2,2,Alinhada ao tema sem contradizer o contexto.
+PLAIN-2430,A,completude,1,2,2,A resposta é completa para um usuário comum final.
+PLAIN-2430,A,utilidade,1,2,2,A resposta é completa para um usuário comum final.
+PLAIN-2430,B,utilidade,2,1,1,"A resposta apenas apresenta uma análise, porém nenhuma conclusão."
+PLAIN-2430,B,rastreabilidade,2,1,2,Toda a resposta é rastreável.
+PLAIN-2450,A,fidelidade,1,2,1,O texto é apresentado de forma genérica.
+PLAIN-2450,A,completude,1,2,2,"A resposta é concisa e direta, porém poderia haver uma complementação de informação."
+PLAIN-2450,A,utilidade,1,2,2,"Clara, equilibrada e muito util."
+PLAIN-2470,A,completude,0,1,0,Não aborda nenhum dos achados dos estudos. Resposta extremamente breve sem nuances.
+PLAIN-2470,A,utilidade,0,1,0,"Resposta curta e direta, porém apresenta informações erradas."
+PLAIN-2470,B,fidelidade,2,1,2,A resposta é fiel aos documentos
+PLAIN-2470,B,utilidade,2,1,1,Foco excessivo em quadril reduz a utilidade direta para ossos em geral.
+PLAIN-270,A,fidelidade,1,2,1,"Está alinhado com as evidencias, porem não trouxe ela inventou um pouco."
+PLAIN-270,A,completude,1,2,2,Responde de forma completa e direta.
+PLAIN-2750,A,completude,1,2,2,"Cobre incidencia, duracao, mecanismo e limitacoes."
+PLAIN-2850,A,utilidade,1,0,0,"Resposta curta e direta, porém apresenta informações erradas."
+PLAIN-2850,B,completude,2,1,1,"É fiel aos docuemntos, porém não responde a pergunta. Dizer que não pode responder / não é possível concluir sobre é melhor do que deixar a cargo do usuario decidir."
+PLAIN-3342,A,completude,1,2,1,"Cobre beneficios, pontos de atencao e conclusao."
+PLAIN-3342,A,utilidade,1,2,2,"Clara, bem organizada e facil de ler. Poderia ter um rigor maior."
+PLAIN-68,B,rastreabilidade,2,1,1,Cita apena suma referencia.

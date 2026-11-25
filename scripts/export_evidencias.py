@@ -33,9 +33,12 @@ PADROES = {
     "rag/rag_retrieval_metrics.csv": "rag",
     "rag/human_eval_summary.csv": "rag",
     "rag/agreement.json": "rag",
-    "rag/determinism_check.json": "rag",
+    "rag/avaliacao_*.csv": "rag",
+    "rag/consenso_divergencias.csv": "rag",
     "analysis/*.csv": "analise",
     "freeze_log.json": "",
+    "test_summary.json": "",
+    "semantic_timing.json": "modelos/bi_encoder",
 }
 PROIBIDOS = {".npy", ".trec", ".parquet", ".pt", ".bin", ".safetensors"}
 LIMITE_BYTES = 5 * 1024 * 1024
