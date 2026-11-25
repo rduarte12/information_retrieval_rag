@@ -1,0 +1,7 @@
+group,query_id,query,ndcg_lex,ndcg_sem,delta
+sem_win,PLAIN-307,Vitamin D: Shedding some light on the new recommendations,0.1480409554829326,1.0,0.8519590445170674
+sem_win,PLAIN-3085,The Difficulty of Arriving at a Vitamin D Recommendation,0.0,0.5109559939712153,0.5109559939712153
+sem_win,PLAIN-977,crib death,0.0,0.46927872602275644,0.46927872602275644
+lex_win,PLAIN-1794,Panama,1.0,0.2640681225725909,-0.7359318774274091
+lex_win,PLAIN-892,chickpeas,0.8701249883466593,0.22009176629808017,-0.6500332220485792
+lex_win,PLAIN-792,cadaverine,0.644824486427155,0.0,-0.644824486427155

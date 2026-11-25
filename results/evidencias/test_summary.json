@@ -1,0 +1,52 @@
+{
+  "aggregates": {
+    "hybrid": {
+      "P@10": 0.2498452012383901,
+      "R@10": 0.16515855638789909,
+      "MAP@10": 0.12880432524928143,
+      "NDCG@10": 0.3447044819943632
+    },
+    "lexical": {
+      "P@10": 0.23931888544891644,
+      "R@10": 0.15324728141580607,
+      "MAP@10": 0.1217450560998734,
+      "NDCG@10": 0.3281232563010112
+    },
+    "reranking": {
+      "P@10": 0.23498452012383902,
+      "R@10": 0.15802188073003717,
+      "MAP@10": 0.12431179926864391,
+      "NDCG@10": 0.3265877306522896
+    },
+    "semantic": {
+      "P@10": 0.21795665634674924,
+      "R@10": 0.1397226509078901,
+      "MAP@10": 0.10561281841608733,
+      "NDCG@10": 0.2973145556389763
+    }
+  },
+  "timings_ms": {
+    "bm25_query_ms": 0.759,
+    "rrf_query_ms": 0.693,
+    "rerank_query_ms": 2255.664
+  },
+  "rerank_manifest_test": {
+    "model_id": "cross-encoder/ms-marco-MiniLM-L2-v2",
+    "revision": "1b5cd67b15209f24824c50370e0397743aa9b787",
+    "max_length": 512,
+    "depth": 50,
+    "activation": "identity",
+    "n_pairs": 16150,
+    "n_truncated": 1465,
+    "pct_truncated": 9.0712,
+    "rerank_time_ms": 2255.664
+  },
+  "validation": {
+    "lexical_rows": 21914,
+    "semantic_rows": 32300,
+    "hybrid_rows": 32300,
+    "reranking_rows": 32300,
+    "metrics_rows": 1292,
+    "typo_rows": 10
+  }
+}

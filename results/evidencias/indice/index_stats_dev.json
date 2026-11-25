@@ -1,0 +1,11 @@
+{
+  "N_docs": 3633,
+  "avgdl": 165.74649050371593,
+  "vocab_size": 18983,
+  "total_postings": 359534,
+  "build_time_s": 0.1585366000654176,
+  "avg_query_time_ms": 0.2636030843814858,
+  "n_queries": 324,
+  "config_id": "stop_snowball",
+  "config_hash": "c9f4bcaaf51fca3a8c0c5bc30acda9acf8ff4727afaaa5cfa52b94c9ad924fb9"
+}

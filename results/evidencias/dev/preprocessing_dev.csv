@@ -1,0 +1,7 @@
+config_id,lowercase,remove_stopwords,stemmer,ndcg10_dev,n_queries
+raw,True,False,none,0.266897,324
+stop,True,True,none,0.274639,324
+porter,True,False,porter,0.290464,324
+stop_porter,True,True,porter,0.295859,324
+snowball,True,False,snowball,0.290579,324
+stop_snowball,True,True,snowball,0.296086,324

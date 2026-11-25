@@ -21,7 +21,7 @@ from src.orchestrator import (
     record_stage_result,
     save_config,
 )
-from src.preprocessing import STOPWORDS_EN, preprocess, surface_vocab, tokenize
+from src.preprocessing import STOPWORDS_EN, TOKEN_RE, preprocess, surface_vocab, tokenize
 
 ERROR_TYPES = ("insercao", "remocao", "substituicao", "transposicao")
 
@@ -81,6 +81,31 @@ def build_kgram_index(dictionary: Mapping[str, int], k: int) -> dict[str, set[st
     return dict(index)
 
 
+def _token_spans(text: str) -> list[tuple[int, int, str]] | None:
+    """Posições (início, fim, token) de cada token de `tokenize` no texto ORIGINAL.
+
+    Permite trocar um único termo preservando o resto da consulta (maiúsculas, hífens,
+    pontuação). Devolve None se `lower()` mudar o comprimento do texto (caracteres
+    especiais), caso em que os chamadores usam a forma tokenizada.
+    """
+    low = text.lower()
+    if len(low) != len(text):
+        return None
+    return [(m.start(), m.end(), m.group()) for m in TOKEN_RE.finditer(low)]
+
+
+def _replace_tokens(text: str, spans: list[tuple[int, int, str]], new_by_idx: Mapping[int, str]) -> str:
+    """Substitui os tokens de índice em `new_by_idx`, mantendo o restante do texto intacto."""
+    out, last = [], 0
+    for idx, (start, end, _) in enumerate(spans):
+        if idx in new_by_idx:
+            out.append(text[last:start])
+            out.append(new_by_idx[idx])
+            last = end
+    out.append(text[last:])
+    return "".join(out)
+
+
 def correct_query(
     query: str,
     dictionary: Mapping[str, int],
@@ -89,12 +114,18 @@ def correct_query(
     jaccard_min: float,
     max_edit: int,
 ) -> tuple[str, list[dict[str, Any]]]:
-    """Correct unknown tokens in `query` using k-gram + Jaccard + OSA distance."""
+    """Correct unknown tokens in `query` using k-gram + Jaccard + OSA distance.
+
+    Só os termos corrigidos são trocados; o resto do texto da consulta é preservado
+    (maiúsculas, hífens, pontuação), para que o bi-encoder receba a mesma consulta
+    original exceto pelo termo corrigido.
+    """
     tokens = tokenize(query, lowercase=True)
     corrected_tokens: list[str] = []
+    replacements: dict[int, str] = {}
     log: list[dict[str, Any]] = []
 
-    for term in tokens:
+    for tok_idx, term in enumerate(tokens):
         if term in dictionary:
             corrected_tokens.append(term)
             continue
@@ -120,6 +151,7 @@ def correct_query(
         if within_edit:
             best_dist, _, chosen = within_edit[0]
             corrected_tokens.append(chosen)
+            replacements[tok_idx] = chosen
             log.append(
                 {
                     "term": term,
@@ -143,7 +175,10 @@ def correct_query(
                 }
             )
 
-    return " ".join(corrected_tokens), log
+    spans = _token_spans(query)
+    if spans is None:
+        return " ".join(corrected_tokens), log
+    return _replace_tokens(query, spans, replacements), log
 
 
 def _stable_seed(query_id: str) -> int:
@@ -182,7 +217,10 @@ def introduce_typo(
     dictionary: Mapping[str, int],
     max_attempts: int = 50,
 ) -> tuple[str, str, str] | None:
-    """Deterministically introduce one out-of-vocabulary typo of `error_type`."""
+    """Deterministically introduce one out-of-vocabulary typo of `error_type`.
+
+    A consulta devolvida é o texto ORIGINAL com apenas o termo alvo alterado.
+    """
     tokens = tokenize(query_text, lowercase=True)
     candidates = [
         (idx, tok)
@@ -196,9 +234,13 @@ def introduce_typo(
         for _ in range(max_attempts):
             mutated = _mutate_token(orig_term, error_type, rng)
             if mutated and mutated != orig_term and mutated not in dictionary:
-                new_tokens = list(tokens)
-                new_tokens[idx] = mutated
-                return " ".join(new_tokens), orig_term, mutated
+                spans = _token_spans(query_text)
+                if spans is None:
+                    new_tokens = list(tokens)
+                    new_tokens[idx] = mutated
+                    return " ".join(new_tokens), orig_term, mutated
+                # Troca só o termo alvo no texto original (preserva maiúsculas e pontuação).
+                return _replace_tokens(query_text, spans, {idx: mutated}), orig_term, mutated
     return None
 
 

@@ -101,6 +101,33 @@ def test_config_hash_changes_with_config():
     assert len(config_hash(c1)) == 64  # SHA-256 hex
 
 
+def test_preprocess_rejeita_dicionario_posicional():
+    """Regressão: preprocess(texto, cfg) fazia o dicionário cair em `lowercase` e as
+    configurações do dev rodavam todas com os valores padrão (bug do run_s2_dev.py)."""
+    cfg = {"lowercase": True, "remove_stopwords": False, "stemmer": None}
+    with pytest.raises(TypeError):
+        preprocess("The patients are running", cfg)
+
+
+def test_configuracoes_do_dev_produzem_saidas_distintas():
+    """As 6 configurações comparadas no dev (RF-1) precisam gerar tokens diferentes."""
+    text = "The patients were running studies on the effects of eating apples."
+    configs = {
+        "raw": {"lowercase": True, "remove_stopwords": False, "stemmer": None},
+        "stop": {"lowercase": True, "remove_stopwords": True, "stemmer": None},
+        "porter": {"lowercase": True, "remove_stopwords": False, "stemmer": "porter"},
+        "stop_porter": {"lowercase": True, "remove_stopwords": True, "stemmer": "porter"},
+        "snowball": {"lowercase": True, "remove_stopwords": False, "stemmer": "snowball"},
+        "stop_snowball": {"lowercase": True, "remove_stopwords": True, "stemmer": "snowball"},
+    }
+    out = {name: tuple(preprocess(text, **cfg)) for name, cfg in configs.items()}
+    assert out["raw"] != out["stop"] != out["stop_porter"]
+    assert out["raw"] != out["porter"]
+    assert out["raw"] != out["snowball"]
+    assert len(out["stop"]) < len(out["raw"])
+    assert "running" in out["raw"] and "running" not in out["porter"]
+
+
 # ---------------------------------------------------------------------------
 # Testes sobre os dados reais do NFCorpus (@pytest.mark.data)
 # ---------------------------------------------------------------------------
@@ -111,7 +138,7 @@ def test_nfcorpus_index_terms_strictly_alphanumeric_and_no_full_scan():
     dataset = load_dataset(DATA_ROOT)
     cfg = {"lowercase": True, "remove_stopwords": True, "stemmer": "porter"}
     processed = {
-        doc_id: preprocess(doc_text(doc), cfg) for doc_id, doc in dataset.docs.items()
+        doc_id: preprocess(doc_text(doc), **cfg) for doc_id, doc in dataset.docs.items()
     }
     index = InvertedIndex(processed)
     pattern = re.compile(r"[a-z0-9]+")
@@ -121,7 +148,7 @@ def test_nfcorpus_index_terms_strictly_alphanumeric_and_no_full_scan():
 
     # Verifica não-varredura no NFCorpus real
     bm25 = BM25(index)
-    q_tokens = preprocess("omega 3 cancer", cfg)
+    q_tokens = preprocess("omega 3 cancer", **cfg)
     res = bm25.search(q_tokens, k=100)
     assert len(res) > 0
     assert bm25.last_n_candidates < index.N
