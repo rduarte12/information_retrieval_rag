@@ -5,9 +5,15 @@ import csv
 import json
 import time
 from pathlib import Path
+import sys
 from typing import Any
 
-from src.bm25 import BM25
+_ROOT = Path(__file__).resolve().parent.parent
+for _p in (str(_ROOT), str(_ROOT / "src")):
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+
+from src.bm25 import BM25  # noqa: E402
 from src.data_loader import doc_text, load_dataset
 from src.fusion import read_trec_run, rrf, write_trec_run
 from src.inverted_index import InvertedIndex

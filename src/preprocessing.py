@@ -36,6 +36,11 @@ def preprocess(
     stemmer: str | None = "snowball",
 ) -> list[str]:
     """Preprocess text according to configuration."""
+    if not isinstance(lowercase, bool):
+        raise TypeError(
+            "preprocess(): 'lowercase' deve ser bool. Para passar um dicionário de "
+            "configuração, use preprocess(texto, **cfg)."
+        )
     tokens = tokenize(text, lowercase=lowercase)
     if remove_stopwords:
         tokens = [t for t in tokens if t not in STOPWORDS_EN]

@@ -100,6 +100,41 @@ def test_deterministic_error_generator():
         assert orig_term in tokenize("omega and nutrition for cancer")
 
 
+def test_erro_e_correcao_preservam_o_texto_original():
+    """D6: o bi-encoder recebe o texto cru; a consulta com erro e a corrigida devem diferir
+    da original APENAS no termo alvo (maiúsculas, hífens e pontuação preservados)."""
+    original = "Are Dental X-Rays Safe?"
+    dictionary = Counter({"are": 90, "dental": 10, "x": 20, "rays": 5, "safe": 8})
+    idx = build_kgram_index(dictionary, k=2)
+    for err_type in ERROR_TYPES:
+        res = introduce_typo("PLAIN-143", original, err_type, dictionary)
+        assert res is not None
+        query_err, orig_term, err_term = res
+        # só o termo alvo muda; o resto do texto é idêntico ao original
+        tok_orig, tok_err = tokenize(original), tokenize(query_err)
+        assert len(tok_orig) == len(tok_err)
+        diffs = [i for i, (a, b) in enumerate(zip(tok_orig, tok_err)) if a != b]
+        assert len(diffs) == 1 and tok_orig[diffs[0]] == orig_term and tok_err[diffs[0]] == err_term
+        assert "X-Rays" in query_err and query_err.endswith("?") and query_err.startswith("Are ")
+
+        corrected, log = correct_query(
+            query_err, dictionary=dictionary, kgram_index=idx, k=2, jaccard_min=0.2, max_edit=1
+        )
+        assert "X-Rays" in corrected and corrected.endswith("?")
+        if log and log[0]["chosen"] == orig_term:
+            assert tokenize(corrected) == tok_orig
+
+
+def test_correcao_sem_erros_devolve_texto_identico():
+    dictionary = Counter({"are": 90, "dental": 10, "x": 20, "rays": 5, "safe": 8})
+    idx = build_kgram_index(dictionary, k=2)
+    corrected, log = correct_query(
+        "Are Dental X-Rays Safe?", dictionary=dictionary, kgram_index=idx, k=2, jaccard_min=0.2, max_edit=1
+    )
+    assert corrected == "Are Dental X-Rays Safe?"
+    assert log == []
+
+
 @pytest.mark.data
 def test_spell_grid_dev_and_frozen_config():
     grid_path = ARTIFACTS_DIR / "dev" / "spell_grid_dev.csv"
